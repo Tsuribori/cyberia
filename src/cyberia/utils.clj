@@ -1,4 +1,4 @@
-(ns cyberia.utils 
+(ns cyberia.utils
   (:require [cheshire.core :refer [parse-string]]
             [clojure.string :as string]))
 
@@ -19,3 +19,7 @@
   []
   (let [file-contents (slurp (cred-file))]
     (parse-string file-contents true)))
+
+(defn authorization-header
+  [user]
+  {"Authorization" (str "Bearer " (:access_token user))})
