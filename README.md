@@ -4,7 +4,7 @@ A simple Pleroma client.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Download from [Releases](https://github.com/Tsuribori/cyberia/releases)
 
 ## Build from source
 
@@ -26,7 +26,7 @@ Download from http://example.com/FIXME.
 Obtain OAuth2 token:
 
 ```shell
-cyberia login --url https://example.com
+cyberia login --url "https://example.com"
 ```
 
 Post a status:
