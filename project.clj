@@ -12,7 +12,8 @@
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
-  :native-image {:opts ["--no-fallback"
+  :native-image {:name "cyberia"
+                 :opts ["--no-fallback"
                         "--enable-http"
                         "--enable-https"
                         "--allow-incomplete-classpath"

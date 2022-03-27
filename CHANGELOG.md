@@ -5,3 +5,4 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - OAuth2 login
 - Simple status posting
+- GraalVM target

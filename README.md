@@ -6,6 +6,17 @@ A simple Pleroma client.
 
 Download from http://example.com/FIXME.
 
+## Build from source
+
+### Requirements
+
+* [GraalVM](https://github.com/graalvm/graalvm-ce-builds/releases) in `$PATH` with `native-image` installed
+* Leiningen
+
+### Build
+
+`lein native-image`
+
 ## Usage
 
 `cyberia [global-options] command [command options] [arguments...]`
