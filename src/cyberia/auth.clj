@@ -1,12 +1,12 @@
 (ns cyberia.auth
   (:require [cheshire.core :refer [parse-string]]
-            [clj-http.client :as client]))
+            [clj-http.client :as client]
+            [cyberia.post :refer [ACTIVITY-PUB-TYPE]]
+            [cyberia.utils :refer [authorization-header]]))
 
 (def DEFAULT-SCOPE "read write")
 (def DEFAULT-REDIRECT-URI "urn:ietf:wg:oauth:2.0:oob")
 (def DEFAULT-RESPONSE-TYPE "code")
-(def DEFAULT-CONFIG-DIR "~/.cyberia")
-(def DEFAULT-CRED-FILE (str DEFAULT-CONFIG-DIR "/default.json"))
 
 (defn make-pleroma-oauth2
   [url]
@@ -82,11 +82,22 @@
                                          :redirect_uri redirect-uri
                                          :code authorization-code
                                          :scopes scope}
-                           :content-type :json})))))
+                           :content-type :json}))
+                  true)))
+
+(defn get-user-info
+  [token-map]
+  (let [user (parse-string (:body (client/get
+                                   (:me token-map)
+                                   {:headers (authorization-header token-map)
+                                    :content-type ACTIVITY-PUB-TYPE
+                                    :accept ACTIVITY-PUB-TYPE})))]
+    (assoc token-map :user user)))
 
 (defn get-credentials
   [url]
   (-> (make-pleroma-oauth2 url)
       (register-app)
       (get-oauth2-authorization-code)
-      (get-token)))
+      (get-token)
+      (get-user-info)))

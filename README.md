@@ -34,3 +34,9 @@ Post a status:
 ```shell
 cyberia post "Everyone's Connected"
 ```
+
+Post a status with sensitive file:
+
+```shell
+cyberia post --sensitive -f /path/to/protocol7.jpeg "Schumann resonance"
+```
