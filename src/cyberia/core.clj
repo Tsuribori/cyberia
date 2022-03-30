@@ -25,7 +25,7 @@
 (def CONFIGURATION
   {:app         {:command     "cyberia"
                  :description "Pleroma CLI posting."
-                 :version     "0.1.0"}
+                 :version     "0.1.1"}
    :commands    [{:command     "login" :short "l"
                   :description ["Obtain Pleroma auth token. Takes URL of server as argument."]
                   :type        :string

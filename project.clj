@@ -1,6 +1,6 @@
-(defproject cyberia "0.1.0"
+(defproject cyberia "0.1.1"
   :description "Pleroma CLI client"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/Tsuribori/cyberia"
   :license {:name "The MIT License"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.10.3"]
