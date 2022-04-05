@@ -1,12 +1,9 @@
 (ns cyberia.auth
-  (:require [cheshire.core :refer [parse-string]]
-            [clj-http.client :as client]
-            [cyberia.post :refer [ACTIVITY-PUB-TYPE]]
-            [cyberia.utils :refer [authorization-header]]))
-
-(def DEFAULT-SCOPE "read write")
-(def DEFAULT-REDIRECT-URI "urn:ietf:wg:oauth:2.0:oob")
-(def DEFAULT-RESPONSE-TYPE "code")
+  (:require [clj-http.client :as client]
+            [cyberia.constants :refer [ACTIVITY-PUB-TYPE DEFAULT-REDIRECT-URI
+                                       DEFAULT-RESPONSE-TYPE DEFAULT-SCOPE]]
+            [cyberia.utils :refer [authorization-header get-app-name
+                                   parse-body]]))
 
 (defn make-pleroma-oauth2
   [url]
@@ -26,19 +23,19 @@
 (defn make-app-request
   [oauth-map]
   (let [{:keys [app-uri redirect-uri scope]} oauth-map]
-    (parse-string (:body (client/post
-                          app-uri
-                          {:form-params {:client_name "Cyberia"
-                                         :redirect_uris redirect-uri
-                                         :scopes scope}
-                           :content-type :json}))
-                  true)))
+    (parse-body (client/post
+                 app-uri
+                 {:form-params {:client_name (get-app-name)
+                                :redirect_uris redirect-uri
+                                :scopes scope}
+                  :content-type :json}))))
 
 (defn register-app
   [oauth-map]
-  (let [app-response (make-app-request oauth-map)]
-    (merge oauth-map {:client-id (:client_id app-response)
-                      :client-secret (:client_secret app-response)})))
+  (let [{:keys [client_id client_secret]}
+        (make-app-request oauth-map)]
+    (merge oauth-map {:client-id client_id
+                      :client-secret client_secret})))
 
 (defn create-oauth2-authorization-uri
   [oauth-map]
@@ -74,24 +71,23 @@
                 authorization-code
                 scope]}
         oauth-map]
-    (parse-string (:body (client/post
-                          access-token-uri
-                          {:form-params {:grant_type grant-type
-                                         :client_id client-id
-                                         :client_secret client-secret
-                                         :redirect_uri redirect-uri
-                                         :code authorization-code
-                                         :scopes scope}
-                           :content-type :json}))
-                  true)))
+    (parse-body (client/post
+                 access-token-uri
+                 {:form-params {:grant_type grant-type
+                                :client_id client-id
+                                :client_secret client-secret
+                                :redirect_uri redirect-uri
+                                :code authorization-code
+                                :scopes scope}
+                  :content-type :json}))))
 
 (defn get-user-info
   [token-map]
-  (let [user (parse-string (:body (client/get
-                                   (:me token-map)
-                                   {:headers (authorization-header token-map)
-                                    :content-type ACTIVITY-PUB-TYPE
-                                    :accept ACTIVITY-PUB-TYPE})))]
+  (let [user (parse-body (client/get
+                          (:me token-map)
+                          {:headers (authorization-header token-map)
+                           :content-type ACTIVITY-PUB-TYPE
+                           :accept ACTIVITY-PUB-TYPE}))]
     (assoc token-map :user user)))
 
 (defn get-credentials

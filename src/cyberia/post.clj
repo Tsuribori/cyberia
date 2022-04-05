@@ -1,13 +1,11 @@
 (ns cyberia.post 
-  (:require [cheshire.core :refer [generate-string parse-string]]
+  (:require [cheshire.core :refer [generate-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
-            [cyberia.utils :refer [authorization-header get-user]]))
-
-(def ACTIVITY-PUB-TYPE "application/activity+json")
-(def ACTIVITY-PUB-CONTEXT "https://www.w3.org/ns/activitystreams")
-(def ACTIVITY-PUB-PUBLIC "https://www.w3.org/ns/activitystreams#Public")
+            [cyberia.constants :refer [ACTIVITY-PUB-CONTEXT
+                                       ACTIVITY-PUB-PUBLIC ACTIVITY-PUB-TYPE]]
+            [cyberia.utils :refer [authorization-header get-user parse-body]]))
 
 (s/def :ap/attachment-map (s/map-of keyword? any?))
 (s/def :ap/attachment (s/coll-of :ap/attachment-map))
@@ -43,12 +41,11 @@
   [file]
   (when file
     (let [user (get-user)]
-      (parse-string (:body (client/post
-                            (get-in user [:user :endpoints :uploadMedia])
-                            {:headers (authorization-header user)
-                             :multipart [{:name "file"
-                                          :content (io/file file)}]}))
-                    true))))
+      (parse-body (client/post
+                   (get-in user [:user :endpoints :uploadMedia])
+                   {:headers (authorization-header user)
+                    :multipart [{:name "file"
+                                 :content (io/file file)}]})))))
 
 (defn create-note
   [^String content opts]
