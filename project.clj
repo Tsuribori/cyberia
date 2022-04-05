@@ -1,4 +1,4 @@
-(defproject cyberia "0.1.1"
+(defproject cyberia "0.1.2"
   :description "Pleroma CLI client"
   :url "https://github.com/Tsuribori/cyberia"
   :license {:name "The MIT License"
